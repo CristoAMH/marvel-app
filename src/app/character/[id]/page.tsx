@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Character, fetchCharacters } from '@/services/api';
+import { Character, Comic, fetchCharacters, fetchComicsByCharacter } from '@/services/api';
 import { useCharacters } from '@/context/CharactersContext';
 import styles from './page.module.css';
 
@@ -15,14 +15,17 @@ export default function CharacterPage() {
   const { charactersMap, setCharacter } = useCharacters();
 
   const [character, setLocalCharacter] = useState<Character | null>(null);
+  const [comics, setComics] = useState<Comic[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const existing = charactersMap[+id];
-    if (existing) {
-      setLocalCharacter(existing);
+    const existingCharacter = charactersMap[+id];
+
+    if (existingCharacter) {
+      setLocalCharacter(existingCharacter);
       setLoading(false);
     } else {
+      // No está en el contexto, pedimos la lista
       fetchCharacters()
         .then(list => {
           const found = list.find(char => char.id === +id);
@@ -43,6 +46,14 @@ export default function CharacterPage() {
     }
   }, [id, charactersMap, setCharacter, router]);
 
+  useEffect(() => {
+    if (character) {
+      fetchComicsByCharacter(character.id, 20, 'onsaleDate')
+        .then(data => setComics(data))
+        .catch(err => console.error('Error fetching comics:', err));
+    }
+  }, [character]);
+
   if (loading) {
     return (
       <div className={styles.loadingContainer} role="alert" aria-busy="true">
@@ -60,9 +71,19 @@ export default function CharacterPage() {
     );
   }
 
-  const comics = character.comics?.items
-    ? [...character.comics.items].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 20)
-    : [];
+  const processedComics = comics.map(comic => {
+    const onsaleDate = comic.dates.find(d => d.type === 'onsaleDate');
+    let year = '';
+    if (onsaleDate) {
+      year = new Date(onsaleDate.date).getFullYear().toString();
+    }
+    return {
+      id: comic.id,
+      title: comic.title,
+      year,
+      thumbnail: comic.thumbnail,
+    };
+  });
 
   return (
     <div className={styles.container}>
@@ -101,20 +122,20 @@ export default function CharacterPage() {
         <section className={styles.comicsSection} aria-labelledby="comics-title">
           <h2 id="comics-title">COMICS</h2>
           <div className={styles.comicsList} role="list">
-            {comics.map((comic, index) => (
-              <div key={index} className={styles.comicCard} role="listitem">
+            {processedComics.map(comic => (
+              <div key={comic.id} className={styles.comicCard} role="listitem">
                 <div className={styles.comicImageWrapper}>
                   <Image
-                    src={`/placeholder.svg?height=450&width=300&text=${encodeURIComponent(comic.name)}`}
-                    alt={`Portada de ${comic.name}`}
+                    src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
+                    alt={`Portada de ${comic.title}`}
                     width={300}
                     height={450}
                     className={styles.comicImage}
                   />
                 </div>
                 <div className={styles.comicInfo}>
-                  <h3 className={styles.comicTitle}>{comic.name}</h3>
-                  <span className={styles.comicYear}>1967</span>
+                  <h3 className={styles.comicTitle}>{comic.title}</h3>
+                  <span className={styles.comicYear}>{comic.year}</span>
                 </div>
               </div>
             ))}
