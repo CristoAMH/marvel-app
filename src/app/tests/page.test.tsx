@@ -39,9 +39,8 @@ describe('HomePage', () => {
       renderWithProviders(<HomePage />);
     });
 
-    expect(screen.getByRole('heading', { name: /Marvel Characters/i })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Buscar personaje.../i)).toBeInTheDocument();
-    expect(screen.getByText(/Resultados:/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/SEARCH A CHARACTER/i)).toBeInTheDocument();
+    expect(screen.getByText(/RESULTS/i)).toBeInTheDocument();
   });
 
   it('carga personajes iniciales al montar el componente', async () => {
@@ -51,12 +50,12 @@ describe('HomePage', () => {
     });
 
     expect(await screen.findByText(/Spider-Man/i)).toBeInTheDocument();
-    expect(screen.getByText(/Resultados: 1/)).toBeInTheDocument();
+    expect(screen.getByText(/1 RESULTS/)).toBeInTheDocument();
   });
 
   it('llama a fetchCharacters con búsqueda debounced al teclear', async () => {
     renderWithProviders(<HomePage />);
-    const input = screen.getByPlaceholderText(/Buscar personaje.../i);
+    const input = screen.getByPlaceholderText(/SEARCH A CHARACTER/i);
 
     fireEvent.change(input, { target: { value: 'Spid' } });
 

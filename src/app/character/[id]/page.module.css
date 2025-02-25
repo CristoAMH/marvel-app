@@ -1,13 +1,32 @@
-.container {
-  min-height: 100vh;
-  background-color: #000;
-  color: #fff;
+:root {
+  /* Colores */
+  --color-black: #000;
+  --color-white: #fff;
+  --color-gray-dark: #333;
+  --color-gray: #666;
+  --color-red: #e23636;
+
+  /* Espaciados */
+  --space-sm: 1rem; /* 16px */
+  --space-md: 1.5rem; /* 24px */
+  --space-lg: 2rem; /* 32px */
+
+  /* Anchos máximos */
+  --max-width-hero: 75rem; /* 1200px => 75rem */
 }
 
+/* Container principal */
+.container {
+  min-height: 100vh;
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+/* Header */
 .header {
-  padding: 1rem;
-  background-color: #000;
-  border-bottom: 1px solid #333;
+  padding: var(--space-sm);
+  background-color: var(--color-black);
+  border-bottom: 0.0625rem solid var(--color-gray-dark); /* 1px => 0.0625rem */
 }
 
 .logoLink {
@@ -17,16 +36,16 @@
 
 .logo {
   height: auto;
-  width: 100px;
+  width: 6.25rem; /* 100px => 6.25rem */
 }
 
 /* Hero Section */
 .heroSection {
-  background: #000;
-  position: relative; /* Para posicionar el pseudo-elemento */
+  background: var(--color-black);
+  position: relative;
 }
 
-/* Pseudo-elemento que dibuja un triángulo blanco en la esquina */
+/* Triángulo blanco en la esquina */
 .heroSection::after {
   content: '';
   position: absolute;
@@ -34,35 +53,33 @@
   right: 0;
   width: 0;
   height: 0;
-  /* Ajusta el tamaño del triángulo con los bordes */
-  border-right: 1.5rem solid #fff;
+  border-right: 1.5rem solid var(--color-white); /* 24px => 1.5rem */
   border-top: 1.5rem solid transparent;
 }
 
 .heroContent {
-  max-width: 1200px;
+  max-width: var(--max-width-hero);
   margin: 0 auto;
   display: grid;
-  gap: 2rem;
+  gap: var(--space-md);
 }
 
 .heroImageWrapper {
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 25rem;
   margin: 0 auto;
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
   object-fit: cover;
 }
 
 .heroInfo {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-sm);
 }
 
 .heroInfo h1 {
@@ -80,24 +97,24 @@
 
 /* Comics Section */
 .comicsSection {
-  background: #fff;
-  padding: 2rem 1rem;
+  background: var(--color-white);
+  padding: var(--space-lg) var(--space-sm);
 }
 
 .comicsSection h2 {
-  max-width: 1200px;
-  margin: 0 auto 2rem;
+  max-width: var(--max-width-hero);
+  margin: 0 auto var(--space-md);
   font-size: 1.5rem;
   font-weight: bold;
-  color: #000;
+  color: var(--color-black);
 }
 
-/* MOBILE (menor a 768px): 2 columnas, scroll vertical */
+/* Móvil (menor a 768px): 2 columnas, scroll vertical */
 .comicsList {
-  max-width: 1200px;
+  max-width: var(--max-width-hero);
   margin: 0 auto;
   display: grid;
-  gap: 1rem;
+  gap: var(--space-sm);
   grid-template-columns: repeat(2, 1fr);
 }
 
@@ -112,7 +129,7 @@
   position: relative;
   aspect-ratio: 2/3;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); /* 2px, 4px => 0.125rem, 0.25rem */
 }
 
 .comicImage {
@@ -127,8 +144,8 @@
 }
 
 .comicCard:focus-within {
-  outline: 2px solid #e23636;
-  border-radius: 4px;
+  outline: 0.125rem solid var(--color-red); /* 2px => 0.125rem */
+  border-radius: 0.25rem; /* 4px => 0.25rem */
 }
 
 .comicInfo {
@@ -140,10 +157,8 @@
 
 .comicTitle {
   font-size: 0.875rem;
-  color: #000;
+  color: var(--color-black);
   font-weight: 500;
-
-  /* Truncado a 2 líneas */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -155,7 +170,7 @@
 
 .comicYear {
   font-size: 0.75rem;
-  color: #666;
+  color: var(--color-gray);
 }
 
 /* Loading & Error States */
@@ -166,18 +181,18 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  background: #000;
-  color: #fff;
+  gap: var(--space-sm);
+  background: var(--color-black);
+  color: var(--color-white);
   text-align: center;
-  padding: 1rem;
+  padding: var(--space-sm);
 }
 
 .loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #333;
-  border-top-color: #e23636;
+  width: 2.5rem; /* 40px => 2.5rem */
+  height: 2.5rem;
+  border: 0.1875rem solid #333; /* 3px => 0.1875rem */
+  border-top-color: var(--color-red);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -191,9 +206,9 @@
 /* Focus Styles */
 .logoLink:focus-visible,
 .comicCard:focus-visible {
-  outline: 2px solid #e23636;
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline: 0.125rem solid var(--color-red);
+  outline-offset: 0.125rem;
+  border-radius: 0.25rem;
 }
 
 /* Reduce Motion */
@@ -204,20 +219,12 @@
   }
 }
 
-/* --------------------------
-   DESKTOP (min-width: 768px)
-   scroll horizontal con barra roja
-   -------------------------- */
-@media (min-width: 768px) {
+/* Desktop (min-width: 48rem => 768px) scroll horizontal con barra roja */
+@media (min-width: 48rem) {
   .heroContent {
-    max-width: 60rem;
     grid-template-columns: auto 1fr;
-    gap: 4rem;
+    gap: var(--space-md);
     align-items: center;
-  }
-
-  .heroImage {
-    width: 20rem;
   }
 
   .heroInfo h1 {
@@ -225,54 +232,40 @@
   }
 
   .comicsSection {
-    padding: 3rem 2rem;
-  }
-
-  .comicsLayout {
-    max-width: 60rem;
-    margin: auto;
+    padding: var(--space-lg) var(--space-md);
   }
 
   /* Cambiamos a flex horizontal */
   .comicsList {
-    display: flex; /* Fila horizontal */
-    gap: 1rem;
-    overflow-x: auto; /* Scroll horizontal */
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
     scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #e23636 transparent;
-    /* Eliminamos grid-template-columns */
+    scrollbar-color: var(--color-red) transparent;
   }
 
   .comicsList::-webkit-scrollbar {
-    height: 8px; /* Altura de la barra */
+    height: 0.5rem; /* 8px => 0.5rem */
   }
   .comicsList::-webkit-scrollbar-track {
     background: transparent;
   }
   .comicsList::-webkit-scrollbar-thumb {
-    background-color: #e23636; /* Rojo Marvel */
-    border-radius: 4px;
-    border: 2px solid transparent;
+    background-color: var(--color-red);
+    border-radius: 0.25rem; /* 4px => 0.25rem */
+    border: 0.125rem solid transparent; /* 2px => 0.125rem */
     background-clip: content-box;
   }
   .comicsList::-webkit-scrollbar-thumb:hover {
     background-color: #ff4c4c;
   }
 
-  /* Fijamos ancho para forzar truncado en 2 líneas */
+  /* Fijamos ancho para forzar 2 líneas en el título */
   .comicCard {
-    flex: 0 0 160px; /* Ajusta según tu diseño */
-  }
-
-  .comicInfo {
-    margin-top: 0.5rem;
-  }
-  .comicTitle {
-    margin-bottom: 0.25rem;
+    flex: 0 0 10rem; /* 160px => 10rem */
   }
 
   .comicImageWrapper {
-    width: 180px;
-    height: 240px; /* 2:3 ratio */
+    width: 11.25rem; /* 180px => 11.25rem */
   }
 }

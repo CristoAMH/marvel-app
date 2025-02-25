@@ -107,8 +107,8 @@ export default function CharacterPage() {
                 className={styles.heroImage}
                 src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
                 alt={`Imagen de ${character.name}`}
-                width={400}
-                height={600}
+                width={320}
+                height={320}
                 priority
               />
             </div>
@@ -129,8 +129,8 @@ export default function CharacterPage() {
                     <Image
                       src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
                       alt={`Portada de ${comic.title}`}
-                      width={300}
-                      height={450}
+                      width={180}
+                      height={270}
                       className={styles.comicImage}
                     />
                   </div>
