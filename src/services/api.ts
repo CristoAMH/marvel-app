@@ -56,8 +56,7 @@ export async function fetchCharacters(query = ""): Promise<Character[]> {
         if (Date.now() - parsed.timestamp < CACHE_EXPIRATION) {
           return parsed.data;
         }
-      } catch (error) {
-        console.error("Error al parsear la caché:", error);
+      } catch {
         window.localStorage.removeItem(cacheKey);
       }
     }
