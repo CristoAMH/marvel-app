@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { fetchCharacters, Character } from "@/services/api";
-import Link from "next/link";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useEffect, useState } from 'react';
+import { fetchCharacters, Character } from '@/services/api';
+import Link from 'next/link';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function HomePage() {
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const debouncedQuery = useDebounce(searchQuery, 300);
 
-  const loadCharacters = async (query = "") => {
+  const loadCharacters = async (query = '') => {
     try {
       const data = await fetchCharacters(query);
       setCharacters(data);
     } catch (error) {
-      console.error("Error fetching characters:", error);
+      console.error('Error fetching characters:', error);
     }
   };
 
@@ -51,18 +51,18 @@ export default function HomePage() {
         </div>
       </header>
       <main>
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {characters.map((char) => (
-            <li key={char.id} style={{ marginBottom: "1rem" }}>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {characters.map(char => (
+            <li key={char.id} style={{ marginBottom: '1rem' }}>
               <Link
                 href={`/character/${char.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+                style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <div>
                   <img
                     src={`${char.thumbnail.path}.${char.thumbnail.extension}`}
                     alt={char.name}
-                    style={{ width: "100px", height: "auto" }}
+                    style={{ width: '100px', height: 'auto' }}
                   />
                 </div>
                 <h2>{char.name}</h2>
