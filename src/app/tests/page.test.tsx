@@ -1,4 +1,5 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { renderWithProviders } from '@/tests/test-utils';
 import * as api from '@/services/api';
 import HomePage from '../page';
 
@@ -33,9 +34,9 @@ describe('HomePage', () => {
     jest.clearAllMocks();
   });
 
-  it('renderiza los elementos iniciales de la UI', async () => {
+  it('renderWithProvidersiza los elementos iniciales de la UI', async () => {
     await act(async () => {
-      render(<HomePage />);
+      renderWithProviders(<HomePage />);
     });
 
     expect(screen.getByRole('heading', { name: /Marvel Characters/i })).toBeInTheDocument();
@@ -44,7 +45,7 @@ describe('HomePage', () => {
   });
 
   it('carga personajes iniciales al montar el componente', async () => {
-    render(<HomePage />);
+    renderWithProviders(<HomePage />);
     await waitFor(() => {
       expect(mockedFetchCharacters).toHaveBeenCalledWith('');
     });
@@ -54,7 +55,7 @@ describe('HomePage', () => {
   });
 
   it('llama a fetchCharacters con búsqueda debounced al teclear', async () => {
-    render(<HomePage />);
+    renderWithProviders(<HomePage />);
     const input = screen.getByPlaceholderText(/Buscar personaje.../i);
 
     fireEvent.change(input, { target: { value: 'Spid' } });

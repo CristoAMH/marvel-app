@@ -5,9 +5,14 @@ import { fetchCharacters, Character } from '@/services/api';
 import Link from 'next/link';
 import { useDebounce } from '@/hooks/useDebounce';
 
+import { useCharacters } from '@/context/CharactersContext';
+
 export default function HomePage() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Hook de contexto para guardar personajes en un diccionario (map)
+  const { setCharacter } = useCharacters();
 
   const debouncedQuery = useDebounce(searchQuery, 300);
 
@@ -15,6 +20,9 @@ export default function HomePage() {
     try {
       const data = await fetchCharacters(query);
       setCharacters(data);
+
+      // Guarda cada personaje en el contexto
+      data.forEach(char => setCharacter(char));
     } catch (error) {
       console.error('Error fetching characters:', error);
     }
@@ -25,6 +33,7 @@ export default function HomePage() {
     loadCharacters();
   }, []);
 
+  // Cargar personajes cuando el valor debounced cambie (al teclear)
   useEffect(() => {
     loadCharacters(debouncedQuery);
   }, [debouncedQuery]);
