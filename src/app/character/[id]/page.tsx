@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Character, fetchCharacters } from '@/services/api';
 import { useCharacters } from '@/context/CharactersContext';
+import styles from './page.module.css';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -17,23 +18,18 @@ export default function CharacterPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Ver si ya existe en el contexto
-    const existing = charactersMap[+id]; // +id para convertir string a number
+    const existing = charactersMap[+id];
     if (existing) {
       setLocalCharacter(existing);
       setLoading(false);
     } else {
-      // 2. No existe en el contexto -> pedimos la lista de 50
       fetchCharacters()
         .then(list => {
-          // Buscar el personaje en la lista
           const found = list.find(char => char.id === +id);
           if (!found) {
-            // Si no está, redirige o muestra un error
             router.push('/404');
             return;
           }
-          // Si lo encontramos, lo guardamos en el contexto y en el estado local
           setCharacter(found);
           setLocalCharacter(found);
         })
@@ -48,50 +44,83 @@ export default function CharacterPage() {
   }, [id, charactersMap, setCharacter, router]);
 
   if (loading) {
-    return <div>Cargando personaje...</div>;
+    return (
+      <div className={styles.loadingContainer} role="alert" aria-busy="true">
+        <div className={styles.loadingSpinner} aria-hidden="true" />
+        <p>Cargando personaje...</p>
+      </div>
+    );
   }
 
   if (!character) {
-    return <div>No se encontró el personaje.</div>;
+    return (
+      <div className={styles.errorContainer} role="alert">
+        No se encontró el personaje.
+      </div>
+    );
   }
 
-  // Ordenar y limitar los cómics (si existen)
   const comics = character.comics?.items
     ? [...character.comics.items].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 20)
     : [];
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <header>
-        {/* Logo que redirige a la Home */}
-        <Link href="/">
-          <Image src="/marvel-logo.png" alt="Marvel Logo" width={100} height={50} />
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <Link href="/" className={styles.logoLink} aria-label="Ir a la página principal">
+          <Image
+            src="/marvel-logo.png"
+            alt="Marvel Logo"
+            width={100}
+            height={50}
+            className={styles.logo}
+          />
         </Link>
       </header>
 
-      <section>
-        <div>
-          <Image
-            src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
-            alt={character.name}
-            width={300}
-            height={300}
-          />
-        </div>
-        <h1>{character.name}</h1>
-        <p>{character.description || 'Sin descripción disponible'}</p>
-      </section>
+      <main>
+        <section className={styles.heroSection} aria-labelledby="character-name">
+          <div className={styles.heroContent}>
+            <div className={styles.heroImageWrapper}>
+              <Image
+                className={styles.heroImage}
+                src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+                alt={`Imagen de ${character.name}`}
+                width={400}
+                height={600}
+                priority
+              />
+            </div>
+            <div className={styles.heroInfo}>
+              <h1 id="character-name">{character.name}</h1>
+              <p>{character.description || 'Sin descripción disponible'}</p>
+            </div>
+          </div>
+        </section>
 
-      <section>
-        <h2>Cómics</h2>
-        <ul>
-          {comics.map((comic, index) => (
-            <li key={index}>
-              <p>{comic.name}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+        <section className={styles.comicsSection} aria-labelledby="comics-title">
+          <h2 id="comics-title">COMICS</h2>
+          <div className={styles.comicsList} role="list">
+            {comics.map((comic, index) => (
+              <div key={index} className={styles.comicCard} role="listitem">
+                <div className={styles.comicImageWrapper}>
+                  <Image
+                    src={`/placeholder.svg?height=450&width=300&text=${encodeURIComponent(comic.name)}`}
+                    alt={`Portada de ${comic.name}`}
+                    width={300}
+                    height={450}
+                    className={styles.comicImage}
+                  />
+                </div>
+                <div className={styles.comicInfo}>
+                  <h3 className={styles.comicTitle}>{comic.name}</h3>
+                  <span className={styles.comicYear}>1967</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
