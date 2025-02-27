@@ -120,25 +120,27 @@ export default function CharacterPage() {
         </section>
 
         <section className={styles.comicsSection} aria-labelledby="comics-title">
-          <h2 id="comics-title">COMICS</h2>
-          <div className={styles.comicsList} role="list">
-            {processedComics.map(comic => (
-              <div key={comic.id} className={styles.comicCard} role="listitem">
-                <div className={styles.comicImageWrapper}>
-                  <Image
-                    src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
-                    alt={`Portada de ${comic.title}`}
-                    width={300}
-                    height={450}
-                    className={styles.comicImage}
-                  />
+          <div className={styles.comicsLayout}>
+            <h2 id="comics-title">COMICS</h2>
+            <div className={styles.comicsList} role="list">
+              {processedComics.map(comic => (
+                <div key={comic.id} className={styles.comicCard} role="listitem">
+                  <div className={styles.comicImageWrapper}>
+                    <Image
+                      src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
+                      alt={`Portada de ${comic.title}`}
+                      width={300}
+                      height={450}
+                      className={styles.comicImage}
+                    />
+                  </div>
+                  <div className={styles.comicInfo}>
+                    <h3 className={styles.comicTitle}>{comic.title}</h3>
+                    <span className={styles.comicYear}>{comic.year}</span>
+                  </div>
                 </div>
-                <div className={styles.comicInfo}>
-                  <h3 className={styles.comicTitle}>{comic.title}</h3>
-                  <span className={styles.comicYear}>{comic.year}</span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
       </main>
