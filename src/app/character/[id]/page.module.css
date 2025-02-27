@@ -23,7 +23,21 @@
 /* Hero Section */
 .heroSection {
   background: #000;
-  padding: 1rem;
+  position: relative; /* Para posicionar el pseudo-elemento dentro */
+}
+
+/* Pseudo-elemento que dibuja un triángulo blanco */
+.heroSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  /* Ajusta el tamaño del triángulo con los bordes */
+  width: 0;
+  height: 0;
+  border-right: 1.5rem solid #fff; /* Triángulo de 80px */
+  border-top: 1.5rem solid transparent;
+  /* border-right y border-bottom quedan en 0 por defecto */
 }
 
 .heroContent {
@@ -44,7 +58,6 @@
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 8px;
 }
 
 .heroInfo {
@@ -99,7 +112,6 @@
   position: relative;
   aspect-ratio: 2/3;
   overflow: hidden;
-  border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -174,10 +186,6 @@
 
 /* Responsive Styles */
 @media (min-width: 768px) {
-  .heroSection {
-    padding: 2rem;
-  }
-
   .heroContent {
     grid-template-columns: auto 1fr;
     gap: 4rem;
