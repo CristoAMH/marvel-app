@@ -9,6 +9,7 @@ import { useCharacters } from '@/context/CharactersContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useUI } from '@/context/UIContext';
 import { SkipLink } from '@/components/SkipLink';
+import { CharacterCard } from '@/components/CharacterCard';
 import styles from './page.module.css';
 
 export default function HomePage() {
@@ -112,45 +113,14 @@ export default function HomePage() {
         </div>
 
         <div className={styles.grid} role="list">
-          {displayedCharacters.map(char => {
-            const fav = isFavorite(char.id);
-            const heartIcon = fav ? '/heart-icon-full.png' : '/heart-icon-empty.png';
-
-            return (
-              <Link
-                key={char.id}
-                href={`/character/${char.id}`}
-                className={styles.card}
-                role="listitem"
-              >
-                <div className={styles.imageWrapper}>
-                  <Image
-                    src={`${char.thumbnail.path}.${char.thumbnail.extension}`}
-                    alt={`Imagen de ${char.name}`}
-                    fill
-                    className={styles.characterImage}
-                    sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
-                  />
-                </div>
-                <div className={styles.cardContent}>
-                  <h2 className={styles.characterName}>{char.name}</h2>
-                  <button
-                    className={styles.favoriteButton}
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleFavorite(char);
-                    }}
-                    aria-label={
-                      fav ? `Remove ${char.name} from favorites` : `Add ${char.name} to favorites`
-                    }
-                  >
-                    <Image src={heartIcon} alt="" width={12} height={12} aria-hidden="true" />
-                  </button>
-                </div>
-              </Link>
-            );
-          })}
+          {displayedCharacters.map(char => (
+            <CharacterCard
+              key={char.id}
+              character={char}
+              isFavorite={isFavorite(char.id)}
+              onToggleFavorite={toggleFavorite}
+            />
+          ))}
         </div>
       </main>
     </div>
