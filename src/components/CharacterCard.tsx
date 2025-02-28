@@ -2,6 +2,7 @@ import { Character } from '@/services/api';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './CharacterCard.module.css';
+import HeartIconFull from './HeartIconFull';
 
 interface CharacterCardProps {
   character: Character;
@@ -10,8 +11,6 @@ interface CharacterCardProps {
 }
 
 export function CharacterCard({ character, isFavorite, onToggleFavorite }: CharacterCardProps) {
-  const heartIcon = isFavorite ? '/heart-icon-full.png' : '/heart-icon-empty.png';
-
   return (
     <Link href={`/character/${character.id}`} className={styles.card} role="listitem">
       <div className={styles.imageWrapper}>
@@ -38,7 +37,7 @@ export function CharacterCard({ character, isFavorite, onToggleFavorite }: Chara
               : `Add ${character.name} to favorites`
           }
         >
-          <Image src={heartIcon} alt="" width={12} height={12} aria-hidden="true" />
+          <HeartIconFull filled={isFavorite} className={isFavorite ? styles.filledHeartIcon : ''} />
         </button>
       </div>
     </Link>

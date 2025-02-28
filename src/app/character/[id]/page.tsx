@@ -10,6 +10,7 @@ import { useUI } from '@/context/UIContext';
 import { SkipLink } from '@/components/SkipLink';
 import styles from './page.module.css';
 import { Header } from '@/components/Header';
+import HeartIconFull from '@/components/HeartIconFull';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -63,7 +64,7 @@ export default function CharacterPage() {
     return (
       <div className={styles.loadingContainer} role="alert" aria-busy="true">
         <div className={styles.loadingSpinner} aria-hidden="true" />
-        <p>Cargando personaje...</p>
+        <p>Loading Characters...</p>
       </div>
     );
   }
@@ -71,7 +72,7 @@ export default function CharacterPage() {
   if (!character) {
     return (
       <div className={styles.errorContainer} role="alert">
-        No se encontró el personaje.
+        Character Not Found
       </div>
     );
   }
@@ -82,7 +83,6 @@ export default function CharacterPage() {
   // Ver si el personaje actual está en favoritos
   const fav = isFavorite(character.id);
   // Ícono para el botón de favorito del personaje
-  const charHeartIcon = fav ? '/heart-icon-full.png' : '/heart-icon-empty.png';
 
   // Procesar los cómics
   const processedComics = comics.map(comic => {
@@ -160,7 +160,7 @@ export default function CharacterPage() {
                       : `Add ${character.name} to favorites`
                   }
                 >
-                  <Image src={charHeartIcon} alt="" width={24} height={24} aria-hidden="true" />
+                  <HeartIconFull width={24} height={24} filled={fav} />
                 </button>
               </div>
 

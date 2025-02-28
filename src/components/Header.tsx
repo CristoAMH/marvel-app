@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Header.module.css';
+import HeartIconFull from './HeartIconFull';
 
 interface HeaderProps {
   favoritesCount: number;
@@ -11,8 +12,6 @@ interface HeaderProps {
 }
 
 export function Header({ favoritesCount, onShowFavorites, onResetHome, logoAction }: HeaderProps) {
-  const heartIcon = favoritesCount > 0 ? '/heart-icon-full.png' : '/heart-icon-empty.png';
-
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
@@ -35,7 +34,7 @@ export function Header({ favoritesCount, onShowFavorites, onResetHome, logoActio
           onClick={onShowFavorites}
           className={styles.headerFavoritesButton}
         >
-          <Image src={heartIcon} alt="" width={20} height={20} aria-hidden="true" />
+          <HeartIconFull width={20} height={20} filled={true} />
           <span className={styles.favoritesCount} aria-live="polite">
             {favoritesCount}
           </span>
