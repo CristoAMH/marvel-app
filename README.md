@@ -209,7 +209,6 @@ Los tests a mi en lo personal me gusta situarlos cerca del componente que los us
 
 ## **8. Futuras Mejoras**
 
--
 - **SSR/ISR**: Para mejorar SEO de la Home (si la API lo permite).
 - **Paginación** o "Infinite Scroll" en la Home para personajes.
 - **Internacionalización** si se requiere en varios idiomas.
