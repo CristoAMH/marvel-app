@@ -22,6 +22,8 @@ Esta aplicación es una **SPA** construida con **Next.js** 13 (App Router) y **R
 
 ¡Se puede hacer mucho mejor, pero gracias por la oportunidad, ha sido un ejercicio muy divertido!
 
+URL de aplicación desplegada: https://marvel-app-red-five.vercel.app/
+
 ---
 
 ## **2. Tecnologías y Librerías Principales**
@@ -207,6 +209,7 @@ Los tests a mi en lo personal me gusta situarlos cerca del componente que los us
 
 ## **8. Futuras Mejoras**
 
+-
 - **SSR/ISR**: Para mejorar SEO de la Home (si la API lo permite).
 - **Paginación** o "Infinite Scroll" en la Home para personajes.
 - **Internacionalización** si se requiere en varios idiomas.
