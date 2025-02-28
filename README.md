@@ -6,6 +6,7 @@
 2. [Tecnologías y Librerías Principales](#tecnologías-y-librerías-principales)
 3. [Arquitectura y Patrones de Diseño](#arquitectura-y-patrones-de-diseño)
    - [Contextos (Characters, Favorites, UI)](#contextos-characters-favorites-ui)
+   - [Custom Hooks y Componentes Modulares](#custom-hooks-y-componentes-modulares)
    - [Por qué no Hexagonal o MVC](#por-qué-no-hexagonal-o-mvc)
 4. [Estructura de Carpetas](#estructura-de-carpetas)
 5. [Instalación y Ejecución](#instalación-y-ejecución)
@@ -31,8 +32,10 @@ Esta aplicación es una **SPA** construida con **Next.js** 13 (App Router) y **R
 - **Axios** para peticiones HTTP
 - **Jest** + **React Testing Library** para testing
 - **ESLint** + **Prettier** para linting y formateo
-- **LocalStorage** para persistir favoritos
+- **Custom Hooks** para la reutilización de lógica (useLocalStorage, useDebounce)
+- **LocalStorage** para persistir favoritos con gestión optimizada
 - **Context API** (tres contextos) para la gestión de estados globales
+- **Componentes reutilizables** para mejor mantenibilidad y consistencia
 
 ---
 
@@ -50,13 +53,27 @@ La aplicación se basa en **contextos** para cada responsabilidad global (person
 2. **FavoritesContext**
 
    - Maneja la lista de personajes favoritos (añadir/quitar).
-   - Persiste la información en `localStorage` para que no se pierda tras refrescar la página.
+   - Persiste la información en `localStorage` mediante custom hooks para mayor eficiencia.
+   - Implementa manejo de eventos para sincronización entre pestañas.
 
 3. **UIContext**
    - Controla el estado de la interfaz, por ejemplo `showFavorites` para filtrar la vista en la Home.
    - Permite, desde la CharacterPage, redirigir a la Home con `showFavorites = true`.
 
-#### **Por qué no Hexagonal o MVC**
+### **Custom Hooks y Componentes Modulares**
+
+1. **Custom Hooks**
+
+   - **useLocalStorage**: Encapsula la lógica de persistencia en localStorage con manejo de errores robusto.
+   - **useDebounce**: Optimiza las búsquedas evitando solicitudes excesivas a la API.
+
+2. **Componentes Modulares**
+   - **Header**: Componente reutilizable para la navegación principal.
+   - **CharacterCard**: Encapsula la presentación y lógica de tarjetas de personajes.
+   - **SearchBar**: Componente de búsqueda optimizado y accesible.
+   - **SkipLink**: Mejora la navegación por teclado para usuarios de tecnologías asistivas.
+
+### **Por qué no Hexagonal o MVC**
 
 - **Hexagonal** (o arquitectura limpia) es muy útil cuando se requiere una **separación de capas** más estricta (dominio, aplicación, infraestructura) y la app de frontend maneja múltiples fuentes de datos o reglas de negocio complejas.
 - **MVC** se suele aplicar en frameworks server-side o en proyectos con un claro modelo-vista-controlador.
@@ -79,14 +96,20 @@ src
 │           ├── /tests
 │           ├── page.tsx       # CharacterPage
 │           └── page.module.css
+├── components                 # Componentes reutilizables
+│   ├── CharacterCard
+│   ├── Header
+│   ├── SearchBar
+│   └── SkipLink               # Componente para accesibilidad
 ├── context
 │   ├── CharactersContext.tsx
 │   ├── FavoritesContext.tsx
 │   └── UIContext.tsx
 ├── hooks
-│   └── useDebounce.ts
+│   ├── useDebounce.ts
+│   └── useLocalStorage.ts     # Gestión optimizada de localStorage
 ├── services
-│   └── /tests
+│   ├── /tests
 │   └── api.ts
 └── tests
     └── test-utils.tsx         # renderWithProviders que envuelve con todos los contextos
@@ -151,24 +174,29 @@ Los tests a mi en lo personal me gusta situarlos cerca del componente que los us
 
    - Se buscó **simplicidad** y la app no requería un store complejo. Dividir en tres contextos (Characters, Favorites, UI) clarifica la responsabilidad de cada uno.
 
-2. **Arquitectura “modular”**
+2. **Arquitectura "modular"**
 
    - Separar la capa de **servicios** (`api.ts`) de la lógica de estado (contextos) y las vistas (Home, CharacterPage) simplifica la comprensión.
+   - Extracción de componentes reutilizables para mejorar mantenibilidad y cohesión del código.
 
 3. **Accesibilidad**
 
+   - Implementación de `SkipLink` para navegación por teclado.
    - Botones de favorito con `aria-label` (`add X to favorites` / `remove X from favorites`).
    - `srOnly` para encabezados invisibles en la Home, evitando romper la semántica de `h1`.
-   - Unido a lo anteror, un buen marcado semántico
+   - `aria-live` para regiones dinámicas como contador de resultados y favoritos.
+   - Atributos `aria-hidden="true"` en elementos decorativos.
+   - Unido a lo anteror, un buen marcado semántico.
 
-4. **Testing**
+4. **Custom Hooks para patrones reutilizables**
+
+   - `useLocalStorage`: Abstrae y optimiza la persistencia en localStorage.
+   - `useDebounce`: Evita saturar la API con cada pulsación en búsquedas.
+
+5. **Testing**
 
    - **`test-utils.tsx`**: Envuelve con `CharactersProvider`, `FavoritesProvider`, `UIProvider`, permitiendo tests **integrales** sin mocks artificiales de contextos.
    - Limpia `localStorage` tras cada test para evitar contaminación del estado de favoritos.
-
-5. **Debounce en la búsqueda**
-
-   - `useDebounce` evita saturar la API con cada pulsación.
 
 6. **No Hexagonal / MVC**
    - Dada la complejidad actual (una sola fuente de datos, lógicas de UI manejables), se prefirió **no** añadir capas extra.
@@ -180,7 +208,9 @@ Los tests a mi en lo personal me gusta situarlos cerca del componente que los us
 ## **8. Futuras Mejoras**
 
 - **SSR/ISR**: Para mejorar SEO de la Home (si la API lo permite).
-- **Paginación** o “Infinite Scroll” en la Home para personajes.
+- **Paginación** o "Infinite Scroll" en la Home para personajes.
 - **Internacionalización** si se requiere en varios idiomas.
-- **Creación de un Hook** que maneje la capa de persistencia en `localStorage` con un TTL o caché.
+- **Sistema de cache** más avanzado con TTL (Time To Live) e invalidaciones.
 - **Mejor control de errores** (p.ej. mostrar un mensaje si la API de Marvel falla).
+- **Optimización de imágenes** con alternativas adaptativas según tamaño de pantalla.
+- **Sistemas de logs** para monitorizar eventos y errores en producción.
