@@ -7,7 +7,8 @@ import Image from 'next/image';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useCharacters } from '@/context/CharactersContext';
 import { useFavorites } from '@/context/FavoritesContext';
-import { useUI } from '@/context/UIContext'; // << Nuevo
+import { useUI } from '@/context/UIContext';
+import { SkipLink } from '@/components/SkipLink';
 import styles from './page.module.css';
 
 export default function HomePage() {
@@ -47,6 +48,9 @@ export default function HomePage() {
 
   return (
     <div className={styles.container}>
+      {/* Skip Link para accesibilidad */}
+      <SkipLink href="#main-content">Saltar al contenido principal</SkipLink>
+
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <Link
@@ -72,22 +76,26 @@ export default function HomePage() {
             className={styles.headerFavoritesButton}
           >
             <Image src="/heart-icon-full.png" alt="Favoritos" width={20} height={20} />
-            <span className={styles.favoritesCount}>{favorites.length}</span>
+            <span className={styles.favoritesCount} aria-live="polite">
+              {favorites.length}
+            </span>
           </button>
         </div>
       </header>
 
-      <main className={styles.main}>
-        {showFavorites && <h2 className={styles.favoritesHeading}>FAVORITES</h2>}
+      <main id="main-content" className={styles.main} tabIndex={-1}>
+        {showFavorites && <h1 className={styles.favoritesHeading}>FAVORITES</h1>}
+        {!showFavorites && <h1 className={styles.srOnly}>Marvel Characters</h1>}
 
         <div className={styles.searchContainer}>
           <div className={styles.searchWrapper}>
             <Image
               src="/search-icon.png"
-              alt="Search"
+              alt=""
               width={12}
               height={12}
               className={styles.searchIcon}
+              aria-hidden="true"
             />
             <input
               type="text"
@@ -98,22 +106,30 @@ export default function HomePage() {
               aria-label="Buscar personaje"
             />
           </div>
-          <div className={styles.resultsCount}>{displayedCharacters.length} RESULTS</div>
+          <div className={styles.resultsCount} aria-live="polite" role="status">
+            {displayedCharacters.length} RESULTS
+          </div>
         </div>
 
-        <div className={styles.grid}>
+        <div className={styles.grid} role="list">
           {displayedCharacters.map(char => {
             const fav = isFavorite(char.id);
             const heartIcon = fav ? '/heart-icon-full.png' : '/heart-icon-empty.png';
 
             return (
-              <Link key={char.id} href={`/character/${char.id}`} className={styles.card}>
+              <Link
+                key={char.id}
+                href={`/character/${char.id}`}
+                className={styles.card}
+                role="listitem"
+              >
                 <div className={styles.imageWrapper}>
                   <Image
                     src={`${char.thumbnail.path}.${char.thumbnail.extension}`}
-                    alt={char.name}
+                    alt={`Imagen de ${char.name}`}
                     fill
                     className={styles.characterImage}
+                    sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 20vw"
                   />
                 </div>
                 <div className={styles.cardContent}>
@@ -122,13 +138,14 @@ export default function HomePage() {
                     className={styles.favoriteButton}
                     onClick={e => {
                       e.preventDefault();
+                      e.stopPropagation();
                       toggleFavorite(char);
                     }}
                     aria-label={
                       fav ? `Remove ${char.name} from favorites` : `Add ${char.name} to favorites`
                     }
                   >
-                    <Image src={heartIcon} alt="Favorito" width={12} height={12} />
+                    <Image src={heartIcon} alt="" width={12} height={12} aria-hidden="true" />
                   </button>
                 </div>
               </Link>
