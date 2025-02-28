@@ -3,16 +3,20 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Character, Comic, fetchCharacters, fetchComicsByCharacter } from '@/services/api';
 import { useCharacters } from '@/context/CharactersContext';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useUI } from '@/context/UIContext';
 import styles from './page.module.css';
 
 export default function CharacterPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params as { id: string };
+
+  const { setShowFavorites } = useUI();
   const { charactersMap, setCharacter } = useCharacters();
+  const { favorites, isFavorite, toggleFavorite } = useFavorites();
 
   const [character, setLocalCharacter] = useState<Character | null>(null);
   const [comics, setComics] = useState<Comic[]>([]);
@@ -20,12 +24,11 @@ export default function CharacterPage() {
 
   useEffect(() => {
     const existingCharacter = charactersMap[+id];
-
     if (existingCharacter) {
       setLocalCharacter(existingCharacter);
       setLoading(false);
     } else {
-      // No está en el contexto, pedimos la lista
+      // No está en el contexto, pedimos la lista completa
       fetchCharacters()
         .then(list => {
           const found = list.find(char => char.id === +id);
@@ -71,6 +74,16 @@ export default function CharacterPage() {
     );
   }
 
+  // Corazón del header depende del total de favoritos
+  const totalFav = favorites.length;
+  const headerHeartIcon = totalFav > 0 ? '/heart-icon-full.png' : '/heart-icon-empty.png';
+
+  // Ver si el personaje actual está en favoritos
+  const fav = isFavorite(character.id);
+  // Ícono para el botón de favorito del personaje
+  const charHeartIcon = fav ? '/heart-icon-full.png' : '/heart-icon-empty.png';
+
+  // Procesar los cómics
   const processedComics = comics.map(comic => {
     const onsaleDate = comic.dates.find(d => d.type === 'onsaleDate');
     let year = '';
@@ -87,16 +100,36 @@ export default function CharacterPage() {
 
   return (
     <div className={styles.container}>
+      {/* HEADER con corazón y contador */}
       <header className={styles.header}>
-        <Link href="/" className={styles.logoLink} aria-label="Ir a la página principal">
-          <Image
-            src="/marvel-logo.png"
-            alt="Marvel Logo"
-            width={100}
-            height={50}
-            className={styles.logo}
-          />
-        </Link>
+        <div className={styles.headerContent}>
+          {/* Logo */}
+          <button
+            className={styles.logoLink}
+            aria-label="Go to Home page"
+            onClick={() => router.push('/')} // Botón para volver a Home
+          >
+            <Image
+              src="/marvel-logo.png"
+              alt="Marvel Logo"
+              width={100}
+              height={50}
+              className={styles.logo}
+            />
+          </button>
+
+          <button
+            aria-label="Show favorites"
+            className={styles.headerFavoritesButton}
+            onClick={() => {
+              setShowFavorites(true);
+              router.push('/');
+            }}
+          >
+            <Image src={headerHeartIcon} alt="Favorites" width={20} height={20} />
+            <span className={styles.favoritesCount}>{totalFav}</span>
+          </button>
+        </div>
       </header>
 
       <main>
@@ -112,9 +145,28 @@ export default function CharacterPage() {
                 priority
               />
             </div>
+
             <div className={styles.heroInfo}>
-              <h1 id="character-name">{character.name}</h1>
-              <p>{character.description || 'Sin descripción disponible'}</p>
+              <div className={styles.titleRow}>
+                <h1 id="character-name" className={styles.heroName}>
+                  {character.name}
+                </h1>
+                <button
+                  className={styles.characterFavoriteButton}
+                  onClick={() => toggleFavorite(character)}
+                  aria-label={
+                    fav
+                      ? `Remove ${character.name} from favorites`
+                      : `Add ${character.name} to favorites`
+                  }
+                >
+                  <Image src={charHeartIcon} alt="Favorite" width={24} height={24} />
+                </button>
+              </div>
+
+              <p className={styles.heroDescription}>
+                {character.description || 'No description available'}
+              </p>
             </div>
           </div>
         </section>

@@ -10,12 +10,12 @@
   --space-sm: 1rem; /* 16px */
   --space-md: 1.5rem; /* 24px */
   --space-lg: 2rem; /* 32px */
+  --space-xl: 3rem; /* 48px */
 
   /* Anchos máximos */
   --max-width-hero: 75rem; /* 1200px => 75rem */
 }
 
-/* Container principal */
 .container {
   min-height: 100vh;
   background-color: var(--color-black);
@@ -29,14 +29,39 @@
   border-bottom: 0.0625rem solid var(--color-gray-dark); /* 1px => 0.0625rem */
 }
 
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--space-xl);
+}
+
 .logoLink {
-  display: block;
-  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .logo {
   height: auto;
   width: 6.25rem; /* 100px => 6.25rem */
+}
+
+.headerFavoritesButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.favoritesCount {
+  color: var(--color-white);
+  font-size: 1rem;
 }
 
 /* Hero Section */
@@ -53,7 +78,7 @@
   right: 0;
   width: 0;
   height: 0;
-  border-right: 1.5rem solid var(--color-white); /* 24px => 1.5rem */
+  border-right: 1.5rem solid var(--color-white);
   border-top: 1.5rem solid transparent;
 }
 
@@ -61,7 +86,8 @@
   max-width: var(--max-width-hero);
   margin: 0 auto;
   display: grid;
-  gap: var(--space-md);
+  /* gap: var(--space-md); */
+  align-items: flex-start;
 }
 
 .heroImageWrapper {
@@ -77,33 +103,53 @@
 }
 
 .heroInfo {
+  padding: var(--space-md) var(--space-sm) var(--space-lg) var(--space-sm);
+  align-self: center;
+}
+
+/* Título + Botón de favorito en la misma línea */
+.titleRow {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-sm);
 }
 
-.heroInfo h1 {
+.heroName {
   font-size: 2rem;
   font-weight: bold;
   text-transform: uppercase;
   line-height: 1.2;
+  margin: 0;
 }
 
-.heroInfo p {
+.characterFavoriteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.heroDescription {
   font-size: 1rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.8);
+  margin-top: var(--space-sm);
 }
 
 /* Comics Section */
 .comicsSection {
   background: var(--color-white);
   padding: var(--space-lg) var(--space-sm);
+  min-height: 100vh;
+}
+
+.comicsLayout {
+  max-width: var(--max-width-hero);
+  margin: 0 auto;
 }
 
 .comicsSection h2 {
-  max-width: var(--max-width-hero);
-  margin: 0 auto var(--space-md);
+  margin: 0 0 var(--space-md);
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--color-black);
@@ -111,8 +157,6 @@
 
 /* Móvil (menor a 768px): 2 columnas, scroll vertical */
 .comicsList {
-  max-width: var(--max-width-hero);
-  margin: 0 auto;
   display: grid;
   gap: var(--space-sm);
   grid-template-columns: repeat(2, 1fr);
@@ -129,7 +173,7 @@
   position: relative;
   aspect-ratio: 2/3;
   overflow: hidden;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1); /* 2px, 4px => 0.125rem, 0.25rem */
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
 }
 
 .comicImage {
@@ -144,8 +188,8 @@
 }
 
 .comicCard:focus-within {
-  outline: 0.125rem solid var(--color-red); /* 2px => 0.125rem */
-  border-radius: 0.25rem; /* 4px => 0.25rem */
+  outline: 0.125rem solid var(--color-red);
+  border-radius: 0.25rem;
 }
 
 .comicInfo {
@@ -189,9 +233,9 @@
 }
 
 .loadingSpinner {
-  width: 2.5rem; /* 40px => 2.5rem */
+  width: 2.5rem;
   height: 2.5rem;
-  border: 0.1875rem solid #333; /* 3px => 0.1875rem */
+  border: 0.1875rem solid #333;
   border-top-color: var(--color-red);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -223,49 +267,58 @@
 @media (min-width: 48rem) {
   .heroContent {
     grid-template-columns: auto 1fr;
-    gap: var(--space-md);
-    align-items: center;
   }
 
-  .heroInfo h1 {
+  .heroName {
     font-size: 3rem;
   }
 
   .comicsSection {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-xl) 0;
   }
 
-  /* Cambiamos a flex horizontal */
   .comicsList {
     display: flex;
     gap: var(--space-sm);
     overflow-x: auto;
-    scrollbar-width: thin; /* Firefox */
+    scrollbar-width: thin;
     scrollbar-color: var(--color-red) transparent;
   }
 
   .comicsList::-webkit-scrollbar {
-    height: 0.5rem; /* 8px => 0.5rem */
+    height: 0.5rem;
   }
   .comicsList::-webkit-scrollbar-track {
     background: transparent;
   }
   .comicsList::-webkit-scrollbar-thumb {
     background-color: var(--color-red);
-    border-radius: 0.25rem; /* 4px => 0.25rem */
-    border: 0.125rem solid transparent; /* 2px => 0.125rem */
+    border-radius: 0.25rem;
+    border: 0.125rem solid transparent;
     background-clip: content-box;
   }
   .comicsList::-webkit-scrollbar-thumb:hover {
     background-color: #ff4c4c;
   }
 
-  /* Fijamos ancho para forzar 2 líneas en el título */
   .comicCard {
-    flex: 0 0 10rem; /* 160px => 10rem */
+    flex: 0 0 10rem;
   }
 
   .comicImageWrapper {
-    width: 11.25rem; /* 180px => 11.25rem */
+    width: 11.25rem;
+    height: 16.875rem;
+  }
+}
+
+/* -------------------------------------
+   TABLETS
+   ------------------------------------- */
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .comicsSection {
+    padding-left: var(--space-xl);
+  }
+  .heroContent {
+    padding-right: var(--space-xl);
   }
 }

@@ -1,6 +1,6 @@
-import { screen, waitFor, act } from '@testing-library/react';
+import { screen, waitFor, act, fireEvent } from '@testing-library/react';
 import { renderWithProviders } from '@/tests/test-utils';
-import CharacterPage from '../page'; // Ajusta la ruta si es distinta
+import CharacterPage from '../page';
 import * as api from '@/services/api';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -50,13 +50,15 @@ describe('CharacterPage', () => {
   let mockPush: jest.Mock;
 
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.useFakeTimers();
+    jest.clearAllMocks();
 
     mockedUseParams.mockReturnValue({ id: '1234' });
 
     mockPush = jest.fn();
     mockedUseRouter.mockReturnValue({ push: mockPush });
+
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -117,5 +119,77 @@ describe('CharacterPage', () => {
     expect(mockedFetchComicsByCharacter).toHaveBeenCalledWith(1234, 20, 'onsaleDate');
 
     expect(await screen.findByText('Test Comic #1')).toBeInTheDocument();
+  });
+
+  describe('favorites feature', () => {
+    it('añade el personaje a favoritos al hacer click en su botón, incrementa el contador en el header', async () => {
+      mockedFetchCharacters.mockResolvedValue([sampleCharacter]);
+      mockedFetchComicsByCharacter.mockResolvedValue(sampleComics);
+
+      await act(async () => {
+        renderWithProviders(<CharacterPage />);
+      });
+
+      expect(await screen.findByRole('heading', { name: /Test Character/i })).toBeInTheDocument();
+
+      const addFavButton = screen.getByRole('button', {
+        name: /add test character to favorites/i,
+      });
+      fireEvent.click(addFavButton);
+
+      const headerFavButton = screen.getByRole('button', { name: /show favorites/i });
+      const headerCountSpan = headerFavButton.querySelector('span');
+
+      await waitFor(() => {
+        expect(headerCountSpan).toHaveTextContent('1');
+      });
+    });
+
+    it('remove the character from favorites if already added', async () => {
+      mockedFetchCharacters.mockResolvedValue([sampleCharacter]);
+      mockedFetchComicsByCharacter.mockResolvedValue(sampleComics);
+
+      await act(async () => {
+        renderWithProviders(<CharacterPage />);
+      });
+
+      // Añadimos a favoritos primero
+      const addFavButton = screen.getByRole('button', {
+        name: /add test character to favorites/i,
+      });
+      fireEvent.click(addFavButton);
+
+      const headerFavButton = screen.getByRole('button', { name: /show favorites/i });
+      const headerCountSpan = headerFavButton.querySelector('span');
+
+      await waitFor(() => {
+        expect(headerCountSpan).toHaveTextContent('1');
+      });
+
+      const removeFavButton = screen.getByRole('button', {
+        name: /remove test character from favorites/i,
+      });
+      fireEvent.click(removeFavButton);
+
+      await waitFor(() => {
+        expect(headerCountSpan).toHaveTextContent('0');
+      });
+    });
+  });
+  it('al hacer click en el corazón del header, se navega a Home y setShowFavorites(true)', async () => {
+    mockedFetchCharacters.mockResolvedValue([sampleCharacter]);
+    mockedFetchComicsByCharacter.mockResolvedValue(sampleComics);
+
+    await act(async () => {
+      renderWithProviders(<CharacterPage />);
+    });
+
+    expect(await screen.findByRole('heading', { name: /Test Character/i })).toBeInTheDocument();
+
+    const headerFavButton = screen.getByRole('button', { name: /show favorites/i });
+
+    fireEvent.click(headerFavButton);
+
+    expect(mockPush).toHaveBeenCalledWith('/');
   });
 });
