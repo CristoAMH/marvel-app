@@ -9,6 +9,7 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { useUI } from '@/context/UIContext';
 import { SkipLink } from '@/components/SkipLink';
 import styles from './page.module.css';
+import { Header } from '@/components/Header';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -77,7 +78,6 @@ export default function CharacterPage() {
 
   // Corazón del header depende del total de favoritos
   const totalFav = favorites.length;
-  const headerHeartIcon = totalFav > 0 ? '/heart-icon-full.png' : '/heart-icon-empty.png';
 
   // Ver si el personaje actual está en favoritos
   const fav = isFavorite(character.id);
@@ -99,42 +99,37 @@ export default function CharacterPage() {
     };
   });
 
+  const handleShowFavorites = () => {
+    setShowFavorites(true);
+    router.push('/');
+  };
+
+  const logoComponent = (
+    <button
+      className={styles.logoLink}
+      aria-label="Ir a la página principal"
+      onClick={() => router.push('/')}
+    >
+      <Image
+        src="/marvel-logo.png"
+        alt="Marvel Logo"
+        width={100}
+        height={50}
+        className={styles.logo}
+      />
+    </button>
+  );
+
   return (
     <div className={styles.container}>
       {/* Skip Link para accesibilidad */}
       <SkipLink href="#main-content">Saltar al contenido principal</SkipLink>
 
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <button
-            className={styles.logoLink}
-            aria-label="Go to Home page"
-            onClick={() => router.push('/')}
-          >
-            <Image
-              src="/marvel-logo.png"
-              alt="Marvel Logo"
-              width={100}
-              height={50}
-              className={styles.logo}
-            />
-          </button>
-
-          <button
-            aria-label="Show favorites"
-            className={styles.headerFavoritesButton}
-            onClick={() => {
-              setShowFavorites(true);
-              router.push('/');
-            }}
-          >
-            <Image src={headerHeartIcon} alt="" width={20} height={20} aria-hidden="true" />
-            <span className={styles.favoritesCount} aria-live="polite">
-              {totalFav}
-            </span>
-          </button>
-        </div>
-      </header>
+      <Header
+        favoritesCount={totalFav}
+        onShowFavorites={handleShowFavorites}
+        logoAction={logoComponent}
+      />
 
       <main id="main-content" tabIndex={-1}>
         <section className={styles.heroSection} aria-labelledby="character-name">
