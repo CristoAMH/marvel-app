@@ -8,16 +8,21 @@ import tsParser from '@typescript-eslint/parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Define las extensiones como un array separado para evitar problemas de recursión
+const extendsList = [
+  'eslint:recommended',
+  'next/core-web-vitals',
+  'next',
+  'plugin:@typescript-eslint/recommended',
+  'plugin:prettier/recommended',
+];
+
+// Crea la instancia de FlatCompat con recommendedConfig
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: {
-    extends: [
-      'eslint:recommended',
-      'next/core-web-vitals',
-      'next',
-      'plugin:@typescript-eslint/recommended',
-      'plugin:prettier/recommended',
-    ],
+    plugins: ['@typescript-eslint', 'prettier'],
+    extends: [], // Vacío para evitar recursión
   },
 });
 
@@ -25,7 +30,12 @@ export default [
   {
     ignores: ['node_modules', '.next', 'dist', 'coverage', 'public'],
   },
-  ...compat.extends('eslint:recommended', 'next/core-web-vitals', 'next'),
+
+  // Aplicar extensiones individualmente sin recursión
+  ...compat.extends('eslint:recommended'),
+  ...compat.extends('next/core-web-vitals'),
+  ...compat.extends('next'),
+
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
