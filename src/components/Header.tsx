@@ -9,9 +9,16 @@ interface HeaderProps {
   onShowFavorites: () => void;
   onResetHome?: () => void;
   logoAction?: ReactNode;
+  children?: ReactNode;
 }
 
-export function Header({ favoritesCount, onShowFavorites, onResetHome, logoAction }: HeaderProps) {
+export function Header({
+  favoritesCount,
+  onShowFavorites,
+  onResetHome,
+  logoAction,
+  children,
+}: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
@@ -40,6 +47,7 @@ export function Header({ favoritesCount, onShowFavorites, onResetHome, logoActio
           </span>
         </button>
       </div>
+      {children}
     </header>
   );
 }

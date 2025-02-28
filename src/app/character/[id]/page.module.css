@@ -6,9 +6,44 @@
 
 /* Header */
 .header {
+  position: relative;
   padding: var(--space-sm);
   background-color: var(--color-black);
   border-bottom: 0.0625rem solid var(--color-gray-dark); /* 1px => 0.0625rem */
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 0.25rem;
+  background-color: var(--color-red);
+  width: 0;
+  transition: width 0.2s ease-out;
+}
+
+.mainContent {
+  opacity: 0;
+  transform: translateY(-50px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.mainContent.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loadingOverlay {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  text-align: center;
+  padding: var(--space-sm);
 }
 
 .headerContent {
@@ -68,7 +103,6 @@
   max-width: var(--max-width-hero);
   margin: 0 auto;
   display: grid;
-  /* gap: var(--space-md); */
   align-items: flex-start;
 }
 
@@ -208,25 +242,10 @@
   justify-content: center;
   align-items: center;
   gap: var(--space-sm);
-  background: var(--color-black);
-  color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-black);
   text-align: center;
   padding: var(--space-sm);
-}
-
-.loadingSpinner {
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 0.1875rem solid #333;
-  border-top-color: var(--color-red);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 /* Focus Styles */
@@ -240,7 +259,7 @@
 /* Reduce Motion */
 @media (prefers-reduced-motion: reduce) {
   .comicImage,
-  .loadingSpinner {
+  .mainContent {
     transition: none;
   }
 }
