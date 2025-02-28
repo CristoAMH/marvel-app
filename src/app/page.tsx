@@ -11,6 +11,7 @@ import { useUI } from '@/context/UIContext';
 import { SkipLink } from '@/components/SkipLink';
 import { CharacterCard } from '@/components/CharacterCard';
 import styles from './page.module.css';
+import { SearchBar } from '@/components/SearchBar';
 
 export default function HomePage() {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -88,29 +89,11 @@ export default function HomePage() {
         {showFavorites && <h1 className={styles.favoritesHeading}>FAVORITES</h1>}
         {!showFavorites && <h1 className={styles.srOnly}>Marvel Characters</h1>}
 
-        <div className={styles.searchContainer}>
-          <div className={styles.searchWrapper}>
-            <Image
-              src="/search-icon.png"
-              alt=""
-              width={12}
-              height={12}
-              className={styles.searchIcon}
-              aria-hidden="true"
-            />
-            <input
-              type="text"
-              className={styles.searchInput}
-              placeholder="SEARCH A CHARACTER"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              aria-label="Buscar personaje"
-            />
-          </div>
-          <div className={styles.resultsCount} aria-live="polite" role="status">
-            {displayedCharacters.length} RESULTS
-          </div>
-        </div>
+        <SearchBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          resultsCount={displayedCharacters.length}
+        />
 
         <div className={styles.grid} role="list">
           {displayedCharacters.map(char => (
