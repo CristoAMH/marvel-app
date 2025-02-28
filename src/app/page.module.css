@@ -1,26 +1,3 @@
-:root {
-  /* Colores */
-  --color-black: #000;
-  --color-white: #fff;
-  --color-gray-dark: #333;
-  --color-gray: #666;
-  --color-gray-light: #aaaaaa;
-  --color-red: #e23636;
-
-  /* Espaciados */
-  --space-xxs: 0.5rem;
-  --space-xs: 0.75rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-
-  /* Anchos máximos */
-  --max-width-header: 87.5rem;
-  --max-width-main: 93.75rem;
-}
-
-/* Clase para ocultar un elemento visualmente pero que sea accesible a screen readers */
 .srOnly {
   position: absolute;
   width: 1px;

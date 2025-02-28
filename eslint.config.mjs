@@ -25,7 +25,7 @@ export default [
   {
     ignores: ['node_modules', '.next', 'dist', 'coverage', 'public'],
   },
-  ...compat.extends(),
+  ...compat.extends('eslint:recommended', 'next/core-web-vitals', 'next'),
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
