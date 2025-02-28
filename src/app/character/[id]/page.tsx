@@ -7,6 +7,7 @@ import { Character, Comic, fetchCharacters, fetchComicsByCharacter } from '@/ser
 import { useCharacters } from '@/context/CharactersContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useUI } from '@/context/UIContext';
+import { SkipLink } from '@/components/SkipLink';
 import styles from './page.module.css';
 
 export default function CharacterPage() {
@@ -100,14 +101,15 @@ export default function CharacterPage() {
 
   return (
     <div className={styles.container}>
-      {/* HEADER con corazón y contador */}
+      {/* Skip Link para accesibilidad */}
+      <SkipLink href="#main-content">Saltar al contenido principal</SkipLink>
+
       <header className={styles.header}>
         <div className={styles.headerContent}>
-          {/* Logo */}
           <button
             className={styles.logoLink}
             aria-label="Go to Home page"
-            onClick={() => router.push('/')} // Botón para volver a Home
+            onClick={() => router.push('/')}
           >
             <Image
               src="/marvel-logo.png"
@@ -126,13 +128,15 @@ export default function CharacterPage() {
               router.push('/');
             }}
           >
-            <Image src={headerHeartIcon} alt="Favorites" width={20} height={20} />
-            <span className={styles.favoritesCount}>{totalFav}</span>
+            <Image src={headerHeartIcon} alt="" width={20} height={20} aria-hidden="true" />
+            <span className={styles.favoritesCount} aria-live="polite">
+              {totalFav}
+            </span>
           </button>
         </div>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className={styles.heroSection} aria-labelledby="character-name">
           <div className={styles.heroContent}>
             <div className={styles.heroImageWrapper}>
@@ -143,6 +147,7 @@ export default function CharacterPage() {
                 width={320}
                 height={320}
                 priority
+                sizes="(max-width: 768px) 100vw, 320px"
               />
             </div>
 
@@ -160,7 +165,7 @@ export default function CharacterPage() {
                       : `Add ${character.name} to favorites`
                   }
                 >
-                  <Image src={charHeartIcon} alt="Favorite" width={24} height={24} />
+                  <Image src={charHeartIcon} alt="" width={24} height={24} aria-hidden="true" />
                 </button>
               </div>
 
@@ -184,6 +189,8 @@ export default function CharacterPage() {
                       width={180}
                       height={270}
                       className={styles.comicImage}
+                      loading="lazy"
+                      sizes="(max-width: 768px) 33vw, 180px"
                     />
                   </div>
                   <div className={styles.comicInfo}>
