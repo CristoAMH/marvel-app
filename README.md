@@ -183,3 +183,4 @@ Los tests a mi en lo personal me gusta situarlos cerca del componente que los us
 - **Paginación** o “Infinite Scroll” en la Home para personajes.
 - **Internacionalización** si se requiere en varios idiomas.
 - **Creación de un Hook** que maneje la capa de persistencia en `localStorage` con un TTL o caché.
+- **Mejor control de errores** (p.ej. mostrar un mensaje si la API de Marvel falla).
