@@ -18,11 +18,6 @@
   display: block;
 }
 
-.logo {
-  width: 6.25rem;
-  height: auto;
-}
-
 /* Botón de favoritos en el header */
 .headerFavoritesButton {
   display: flex;

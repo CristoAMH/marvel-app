@@ -29,8 +29,8 @@ export function Header({
             <Image
               src="/marvel-logo.png"
               alt="Marvel Logo"
-              width={100}
-              height={50}
+              width={130}
+              height={52}
               className={styles.logo}
               priority
             />

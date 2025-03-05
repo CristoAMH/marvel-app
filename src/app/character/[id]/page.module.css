@@ -46,41 +46,6 @@
   padding: var(--space-sm);
 }
 
-.headerContent {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 var(--space-xl);
-}
-
-.logoLink {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.logo {
-  height: auto;
-  width: 6.25rem; /* 100px => 6.25rem */
-}
-
-.headerFavoritesButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.favoritesCount {
-  color: var(--color-white);
-  font-size: 1rem;
-}
-
 /* Hero Section */
 .heroSection {
   background: var(--color-black);
@@ -115,6 +80,7 @@
 
 .heroImage {
   width: 100%;
+  height: auto;
   object-fit: cover;
 }
 
@@ -249,7 +215,6 @@
 }
 
 /* Focus Styles */
-.logoLink:focus-visible,
 .comicCard:focus-visible {
   outline: 0.125rem solid var(--color-red);
   outline-offset: 0.125rem;
