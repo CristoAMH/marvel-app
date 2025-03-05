@@ -1,0 +1,35 @@
+/* src/components/ErrorMessage.module.css */
+.errorMessage {
+  background-color: rgba(226, 54, 54, 0.1);
+  border-left: 4px solid var(--color-red);
+  color: var(--color-black);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.25rem;
+}
+
+.errorMessage p {
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.retryButton {
+  background-color: var(--color-red);
+  color: var(--color-white);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.retryButton:hover {
+  background-color: #c72323;
+}
+
+.retryButton:focus {
+  outline: 2px solid var(--color-black);
+  outline-offset: 2px;
+}
