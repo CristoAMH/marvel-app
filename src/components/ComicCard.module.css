@@ -1,0 +1,62 @@
+.comicCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.comicImageWrapper {
+  position: relative;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.comicImage {
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.comicCard:hover .comicImage {
+  transform: scale(1.05);
+}
+
+.comicCard:focus-within {
+  outline: 0.125rem solid var(--color-red);
+  border-radius: 0.25rem;
+}
+
+.comicInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+.comicTitle {
+  font-size: 0.875rem;
+  color: var(--color-black);
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  line-height: 1.4;
+  max-height: calc(1.4em * 2);
+}
+
+.comicYear {
+  font-size: 0.75rem;
+  color: var(--color-gray);
+}
+
+.comicCard:focus-visible {
+  outline: 0.125rem solid var(--color-red);
+  outline-offset: 0.125rem;
+  border-radius: 0.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comicImage {
+    transition: none;
+  }
+}

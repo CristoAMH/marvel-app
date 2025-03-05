@@ -1,0 +1,62 @@
+.comicsSection {
+  background: var(--color-white);
+  padding: var(--space-lg) var(--space-sm);
+  min-height: 100vh;
+}
+
+.comicsLayout {
+  max-width: var(--max-width-hero);
+  margin: 0 auto;
+}
+
+.comicsSection h2 {
+  margin: 0 0 var(--space-md);
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-black);
+}
+
+.comicsList {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 48rem) {
+  .comicsSection {
+    padding: var(--space-xl) 0;
+  }
+
+  .comicsList {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-red) transparent;
+  }
+
+  .comicsList::-webkit-scrollbar {
+    height: 0.5rem;
+  }
+
+  .comicsList::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .comicsList::-webkit-scrollbar-thumb {
+    background-color: var(--color-red);
+    border-radius: 0.25rem;
+    border: 0.125rem solid transparent;
+    background-clip: content-box;
+  }
+
+  .comicsList::-webkit-scrollbar-thumb:hover {
+    background-color: #ff4c4c;
+  }
+}
+
+@media (min-width: 48rem) and (max-width: 64rem) {
+  .comicsSection {
+    padding-left: var(--space-xl);
+  }
+}

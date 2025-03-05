@@ -12,6 +12,7 @@ import styles from './page.module.css';
 import { Header } from '@/components/Header';
 import HeartIconFull from '@/components/HeartIconFull';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { ComicList } from '@/components/ComicList';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -180,38 +181,7 @@ export default function CharacterPage() {
             </div>
           </section>
 
-          <section className={styles.comicsSection} aria-labelledby="comics-title">
-            <div className={styles.comicsLayout}>
-              <h2 id="comics-title">COMICS</h2>
-              <div className={styles.comicsList} role="list">
-                {comics.map(comic => (
-                  <div key={comic.id} className={styles.comicCard} role="listitem">
-                    <div className={styles.comicImageWrapper}>
-                      <Image
-                        src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
-                        alt={`Portada de ${comic.title}`}
-                        width={180}
-                        height={270}
-                        className={styles.comicImage}
-                        loading="lazy"
-                        sizes="(max-width: 768px) 33vw, 180px"
-                      />
-                    </div>
-                    <div className={styles.comicInfo}>
-                      <h3 className={styles.comicTitle}>{comic.title}</h3>
-                      <span className={styles.comicYear}>
-                        {comic.dates.find(d => d.type === 'onsaleDate')
-                          ? new Date(
-                              comic.dates.find(d => d.type === 'onsaleDate')!.date
-                            ).getFullYear()
-                          : 'N/A'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
+          <ComicList comics={comics} />
         </main>
       )}
     </div>
