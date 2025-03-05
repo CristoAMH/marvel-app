@@ -87,7 +87,8 @@ export default function CharacterPage() {
     };
 
     loadCharacterData();
-  }, [id, charactersMap, setCharacter, router, handleError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, charactersMap]);
 
   const totalFav = favorites.length;
 
