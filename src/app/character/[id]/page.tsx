@@ -13,6 +13,7 @@ import { Header } from '@/components/Header';
 import HeartIconFull from '@/components/HeartIconFull';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { ComicList } from '@/components/ComicList';
+import { LoadingOverlay } from '@/components/LoadingOverlay';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -130,11 +131,7 @@ export default function CharacterPage() {
         </div>
       )}
 
-      {loading && !error.hasError && (
-        <div className={styles.loadingOverlay}>
-          <p>Loading character information...</p>
-        </div>
-      )}
+      {loading && !error.hasError && <LoadingOverlay message="Loading character information..." />}
 
       {!loading && !error.hasError && character && (
         <main
