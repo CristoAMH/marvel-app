@@ -70,7 +70,7 @@ describe('api', () => {
     it('debería lanzar un error cuando la API falla', async () => {
       mockedAxios.get.mockRejectedValue(new Error('API Error'));
 
-      await expect(fetchCharacters('Spider')).rejects.toThrow('Error al obtener personajes');
+      await expect(fetchCharacters('Spider')).rejects.toThrow('Error at obtaining characters');
     });
   });
 

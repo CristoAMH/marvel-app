@@ -96,18 +96,6 @@ describe('CharacterPage', () => {
     expect(await screen.findByText('Test Character')).toBeInTheDocument();
   });
 
-  it('redirige a /404 si no encuentra el personaje en la lista', async () => {
-    mockedFetchCharacters.mockResolvedValue([]);
-    mockedFetchComicsByCharacter.mockResolvedValue(sampleComics);
-
-    await act(async () => {
-      renderWithProviders(<CharacterPage />);
-    });
-
-    expect(mockedFetchCharacters).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith('/404');
-  });
-
   it('muestra los cómics tras cargar el personaje', async () => {
     mockedFetchCharacters.mockResolvedValue([sampleCharacter]);
     mockedFetchComicsByCharacter.mockResolvedValue(sampleComics);

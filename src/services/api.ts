@@ -147,7 +147,7 @@ export async function fetchCharacters(query = ''): Promise<Character[]> {
 
     return characters;
   } catch {
-    throw new Error('Error al obtener personajes');
+    throw new Error('Error at obtaining characters');
   }
 }
 

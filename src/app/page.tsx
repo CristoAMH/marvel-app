@@ -13,7 +13,6 @@ import { SearchBar } from '@/components/SearchBar';
 import { Header } from '@/components/Header';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { ErrorMessage } from '@/components/ErrorMessage';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function HomePage() {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -61,55 +60,53 @@ export default function HomePage() {
   );
 
   return (
-    <ErrorBoundary>
-      <div className={styles.container}>
-        {/* Skip Link para accesibilidad */}
-        <SkipLink href="#main-content">Saltar al contenido principal</SkipLink>
+    <div className={styles.container}>
+      {/* Skip Link para accesibilidad */}
+      <SkipLink href="#main-content">Saltar al contenido principal</SkipLink>
 
-        <Header
-          favoritesCount={favorites.length}
-          onShowFavorites={() => setShowFavorites(true)}
-          onResetHome={handleResetHome}
+      <Header
+        favoritesCount={favorites.length}
+        onShowFavorites={() => setShowFavorites(true)}
+        onResetHome={handleResetHome}
+      />
+      <main id="main-content" className={styles.main} tabIndex={-1}>
+        {showFavorites && <h1 className={styles.favoritesHeading}>FAVORITES</h1>}
+        {!showFavorites && <h1 className={styles.srOnly}>Marvel Characters</h1>}
+
+        <SearchBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          resultsCount={displayedCharacters.length}
+          isLoading={isLoading}
         />
-        <main id="main-content" className={styles.main} tabIndex={-1}>
-          {showFavorites && <h1 className={styles.favoritesHeading}>FAVORITES</h1>}
-          {!showFavorites && <h1 className={styles.srOnly}>Marvel Characters</h1>}
 
-          <SearchBar
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            resultsCount={displayedCharacters.length}
-            isLoading={isLoading}
+        {error.hasError && (
+          <ErrorMessage
+            message={error.message}
+            onRetry={() => {
+              clearError();
+              loadCharacters(debouncedQuery);
+            }}
           />
+        )}
 
-          {error.hasError && (
-            <ErrorMessage
-              message={error.message}
-              onRetry={() => {
-                clearError();
-                loadCharacters(debouncedQuery);
-              }}
+        <div className={styles.grid} role="list">
+          {displayedCharacters.map(char => (
+            <CharacterCard
+              key={char.id}
+              character={char}
+              isFavorite={isFavorite(char.id)}
+              onToggleFavorite={toggleFavorite}
             />
-          )}
+          ))}
+        </div>
 
-          <div className={styles.grid} role="list">
-            {displayedCharacters.map(char => (
-              <CharacterCard
-                key={char.id}
-                character={char}
-                isFavorite={isFavorite(char.id)}
-                onToggleFavorite={toggleFavorite}
-              />
-            ))}
+        {!isLoading && displayedCharacters.length === 0 && !error.hasError && (
+          <div className={styles.noResults}>
+            <p>No characters found. Try a different search term.</p>
           </div>
-
-          {!isLoading && displayedCharacters.length === 0 && !error.hasError && (
-            <div className={styles.noResults}>
-              <p>No characters found. Try a different search term.</p>
-            </div>
-          )}
-        </main>
-      </div>
-    </ErrorBoundary>
+        )}
+      </main>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Character, Comic, fetchCharacters, fetchComicsByCharacter } from '@/services/api';
@@ -11,6 +11,7 @@ import { SkipLink } from '@/components/SkipLink';
 import styles from './page.module.css';
 import { Header } from '@/components/Header';
 import HeartIconFull from '@/components/HeartIconFull';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -27,10 +28,33 @@ export default function CharacterPage() {
 
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isContentVisible, setIsContentVisible] = useState(false);
+  const { error, handleError, clearError } = useErrorHandler();
+
+  // Referencia para el progreso del intervalo para evitar problemas de hidratación
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Inicialización segura de los intervalos de tiempo
+  useEffect(() => {
+    progressIntervalRef.current = setInterval(() => {
+      setLoadingProgress(prev => {
+        if (prev >= 100) {
+          if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+          }
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 200);
+
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
-    let progressInterval: NodeJS.Timeout;
-
     const loadCharacterData = async () => {
       try {
         // Primero, intentar obtener el personaje del contexto
@@ -41,7 +65,7 @@ export default function CharacterPage() {
           existingCharacter || (await fetchCharacters()).find(char => char.id === +id);
 
         if (!characterToSet) {
-          router.push('/404');
+          handleError('Character not found');
           return;
         }
 
@@ -58,30 +82,12 @@ export default function CharacterPage() {
 
         setIsContentVisible(true);
       } catch (err) {
-        console.error('Error loading character data:', err);
-        router.push('/404');
+        handleError(err);
       }
     };
 
-    // Simular progreso
-    progressInterval = setInterval(() => {
-      setLoadingProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 200);
-
-    // Iniciar carga de datos
     loadCharacterData();
-
-    // Limpiar intervalos
-    return () => {
-      clearInterval(progressInterval);
-    };
-  }, [id, charactersMap, setCharacter, router]);
+  }, [id, charactersMap, setCharacter, router, handleError]);
 
   const totalFav = favorites.length;
 
@@ -106,91 +112,105 @@ export default function CharacterPage() {
         )}
       </Header>
 
-      {loading ? (
+      {error.hasError && (
+        <div className={styles.errorContainer} role="alert">
+          <h2>Error</h2>
+          <p>{error.message}</p>
+          <button
+            className={styles.errorButton}
+            onClick={() => {
+              clearError();
+              router.push('/');
+            }}
+          >
+            Return to home
+          </button>
+        </div>
+      )}
+
+      {loading && !error.hasError && (
         <div className={styles.loadingOverlay}>
           <p>Loading character information...</p>
         </div>
-      ) : (
+      )}
+
+      {!loading && !error.hasError && character && (
         <main
           id="main-content"
           tabIndex={-1}
           className={`${styles.mainContent} ${isContentVisible ? styles.visible : ''}`}
         >
-          {character && (
-            <>
-              <section className={styles.heroSection} aria-labelledby="character-name">
-                <div className={styles.heroContent}>
-                  <div className={styles.heroImageWrapper}>
-                    <Image
-                      className={styles.heroImage}
-                      src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
-                      alt={`Imagen de ${character.name}`}
-                      width={320}
-                      height={320}
-                      priority
-                      sizes="(max-width: 768px) 100vw, 320px"
-                    />
-                  </div>
+          <section className={styles.heroSection} aria-labelledby="character-name">
+            <div className={styles.heroContent}>
+              <div className={styles.heroImageWrapper}>
+                <Image
+                  className={styles.heroImage}
+                  src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
+                  alt={`Imagen de ${character.name}`}
+                  width={320}
+                  height={320}
+                  priority
+                  sizes="(max-width: 768px) 100vw, 320px"
+                />
+              </div>
 
-                  <div className={styles.heroInfo}>
-                    <div className={styles.titleRow}>
-                      <h1 id="character-name" className={styles.heroName}>
-                        {character.name}
-                      </h1>
-                      <button
-                        className={styles.characterFavoriteButton}
-                        onClick={() => toggleFavorite(character)}
-                        aria-label={
-                          isFavorite(character.id)
-                            ? `Remove ${character.name} from favorites`
-                            : `Add ${character.name} to favorites`
-                        }
-                      >
-                        <HeartIconFull width={24} height={24} filled={isFavorite(character.id)} />
-                      </button>
+              <div className={styles.heroInfo}>
+                <div className={styles.titleRow}>
+                  <h1 id="character-name" className={styles.heroName}>
+                    {character.name}
+                  </h1>
+                  <button
+                    className={styles.characterFavoriteButton}
+                    onClick={() => toggleFavorite(character)}
+                    aria-label={
+                      isFavorite(character.id)
+                        ? `Remove ${character.name} from favorites`
+                        : `Add ${character.name} to favorites`
+                    }
+                  >
+                    <HeartIconFull width={24} height={24} filled={isFavorite(character.id)} />
+                  </button>
+                </div>
+
+                <p className={styles.heroDescription}>
+                  {character.description || 'No description available'}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section className={styles.comicsSection} aria-labelledby="comics-title">
+            <div className={styles.comicsLayout}>
+              <h2 id="comics-title">COMICS</h2>
+              <div className={styles.comicsList} role="list">
+                {comics.map(comic => (
+                  <div key={comic.id} className={styles.comicCard} role="listitem">
+                    <div className={styles.comicImageWrapper}>
+                      <Image
+                        src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
+                        alt={`Portada de ${comic.title}`}
+                        width={180}
+                        height={270}
+                        className={styles.comicImage}
+                        loading="lazy"
+                        sizes="(max-width: 768px) 33vw, 180px"
+                      />
                     </div>
-
-                    <p className={styles.heroDescription}>
-                      {character.description || 'No description available'}
-                    </p>
+                    <div className={styles.comicInfo}>
+                      <h3 className={styles.comicTitle}>{comic.title}</h3>
+                      <span className={styles.comicYear}>
+                        {comic.dates.find(d => d.type === 'onsaleDate')
+                          ? new Date(
+                              comic.dates.find(d => d.type === 'onsaleDate')!.date
+                            ).getFullYear()
+                          : 'N/A'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </section>
-
-              <section className={styles.comicsSection} aria-labelledby="comics-title">
-                <div className={styles.comicsLayout}>
-                  <h2 id="comics-title">COMICS</h2>
-                  <div className={styles.comicsList} role="list">
-                    {comics.map(comic => (
-                      <div key={comic.id} className={styles.comicCard} role="listitem">
-                        <div className={styles.comicImageWrapper}>
-                          <Image
-                            src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
-                            alt={`Portada de ${comic.title}`}
-                            width={180}
-                            height={270}
-                            className={styles.comicImage}
-                            loading="lazy"
-                            sizes="(max-width: 768px) 33vw, 180px"
-                          />
-                        </div>
-                        <div className={styles.comicInfo}>
-                          <h3 className={styles.comicTitle}>{comic.title}</h3>
-                          <span className={styles.comicYear}>
-                            {comic.dates.find(d => d.type === 'onsaleDate')
-                              ? new Date(
-                                  comic.dates.find(d => d.type === 'onsaleDate')!.date
-                                ).getFullYear()
-                              : 'N/A'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            </>
-          )}
+                ))}
+              </div>
+            </div>
+          </section>
         </main>
       )}
     </div>

@@ -4,6 +4,7 @@ import './globals.css';
 import { CharactersProvider } from '@/context/CharactersContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { UIProvider } from '@/context/UIContext';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <UIProvider>
           <CharactersProvider>
-            <FavoritesProvider>{children}</FavoritesProvider>
+            <FavoritesProvider>
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </FavoritesProvider>
           </CharactersProvider>
         </UIProvider>
       </body>

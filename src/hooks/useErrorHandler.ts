@@ -1,4 +1,3 @@
-// src/hooks/useErrorHandler.ts
 import { useState } from 'react';
 
 interface ErrorState {
@@ -10,7 +9,6 @@ export function useErrorHandler() {
   const [error, setError] = useState<ErrorState>({ hasError: false, message: '' });
 
   const handleError = (err: unknown) => {
-    console.error('Error caught:', err);
     let message = 'An unexpected error occurred';
 
     if (err instanceof Error) {
@@ -20,11 +18,6 @@ export function useErrorHandler() {
     }
 
     setError({ hasError: true, message });
-
-    // Aquí podrías integrar con un servicio de monitoreo como Sentry
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(err);
-    // }
   };
 
   const clearError = () => {
