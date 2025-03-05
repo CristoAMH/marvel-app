@@ -32,6 +32,7 @@ export function Header({
               width={100}
               height={50}
               className={styles.logo}
+              priority
             />
           </Link>
         )}
