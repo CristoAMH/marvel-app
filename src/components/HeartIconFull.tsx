@@ -16,14 +16,17 @@ export default function HeartIconFull({
   className = '',
   forceWhite = false,
 }: HeartIconProps) {
+  const safeWidth = typeof width === 'number' && !isNaN(width) ? width : 12;
+  const safeHeight = typeof height === 'number' && !isNaN(height) ? height : 12;
+
   const baseClass = styles.heartIcon;
   const fillClass = filled ? styles.heartFilled : styles.heartEmpty;
   const whiteClass = forceWhite ? styles.heartWhite : '';
 
   return (
     <svg
-      width={width}
-      height={height}
+      width={safeWidth}
+      height={safeHeight}
       viewBox="0 0 24 24"
       className={`${baseClass} ${fillClass} ${whiteClass} ${className}`}
       aria-hidden="true"
