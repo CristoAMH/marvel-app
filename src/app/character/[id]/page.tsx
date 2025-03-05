@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { Character, Comic, fetchCharacters, fetchComicsByCharacter } from '@/services/api';
 import { useCharacters } from '@/context/CharactersContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -10,10 +9,10 @@ import { useUI } from '@/context/UIContext';
 import { SkipLink } from '@/components/SkipLink';
 import styles from './page.module.css';
 import { Header } from '@/components/Header';
-import HeartIconFull from '@/components/HeartIconFull';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { ComicList } from '@/components/ComicList';
 import { LoadingOverlay } from '@/components/LoadingOverlay';
+import { CharacterDetail } from '@/components/CharacterDetail';
 
 export default function CharacterPage() {
   const params = useParams();
@@ -139,44 +138,11 @@ export default function CharacterPage() {
           tabIndex={-1}
           className={`${styles.mainContent} ${isContentVisible ? styles.visible : ''}`}
         >
-          <section className={styles.heroSection} aria-labelledby="character-name">
-            <div className={styles.heroContent}>
-              <div className={styles.heroImageWrapper}>
-                <Image
-                  className={styles.heroImage}
-                  src={`${character.thumbnail.path}.${character.thumbnail.extension}`}
-                  alt={`Imagen de ${character.name}`}
-                  width={320}
-                  height={320}
-                  priority
-                  sizes="(max-width: 768px) 100vw, 320px"
-                />
-              </div>
-
-              <div className={styles.heroInfo}>
-                <div className={styles.titleRow}>
-                  <h1 id="character-name" className={styles.heroName}>
-                    {character.name}
-                  </h1>
-                  <button
-                    className={styles.characterFavoriteButton}
-                    onClick={() => toggleFavorite(character)}
-                    aria-label={
-                      isFavorite(character.id)
-                        ? `Remove ${character.name} from favorites`
-                        : `Add ${character.name} to favorites`
-                    }
-                  >
-                    <HeartIconFull width={24} height={24} filled={isFavorite(character.id)} />
-                  </button>
-                </div>
-
-                <p className={styles.heroDescription}>
-                  {character.description || 'No description available'}
-                </p>
-              </div>
-            </div>
-          </section>
+          <CharacterDetail
+            character={character}
+            isFavorite={isFavorite(character.id)}
+            onToggleFavorite={toggleFavorite}
+          />
 
           <ComicList comics={comics} />
         </main>

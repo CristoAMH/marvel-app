@@ -1,0 +1,76 @@
+.heroSection {
+  background: var(--color-black);
+  position: relative;
+}
+
+.heroSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-right: 1.5rem solid var(--color-white);
+  border-top: 1.5rem solid transparent;
+}
+
+.heroContent {
+  max-width: var(--max-width-hero);
+  margin: 0 auto;
+  display: grid;
+  align-items: flex-start;
+}
+
+.heroImageWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 25rem;
+  margin: 0 auto;
+}
+
+.heroImage {
+  object-fit: cover;
+}
+
+.heroInfo {
+  padding: var(--space-md) var(--space-sm) var(--space-lg) var(--space-sm);
+  align-self: center;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.heroName {
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.characterFavoriteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.heroDescription {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: var(--space-sm);
+}
+
+@media (min-width: 48rem) {
+  .heroContent {
+    grid-template-columns: auto 1fr;
+  }
+
+  .heroName {
+    font-size: 3rem;
+  }
+}
