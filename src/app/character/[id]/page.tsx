@@ -85,22 +85,6 @@ export default function CharacterPage() {
 
   const totalFav = favorites.length;
 
-  const logoComponent = (
-    <button
-      className={styles.logoLink}
-      aria-label="Ir a la página principal"
-      onClick={() => router.push('/')}
-    >
-      <Image
-        src="/marvel-logo.png"
-        alt="Marvel Logo"
-        width={100}
-        height={50}
-        className={styles.logo}
-      />
-    </button>
-  );
-
   const handleShowFavorites = () => {
     setShowFavorites(true);
     router.push('/');
@@ -110,11 +94,7 @@ export default function CharacterPage() {
     <div className={styles.container}>
       <SkipLink href="#main-content">Skip to the main content</SkipLink>
 
-      <Header
-        favoritesCount={totalFav}
-        onShowFavorites={handleShowFavorites}
-        logoAction={logoComponent}
-      >
+      <Header favoritesCount={totalFav} onShowFavorites={handleShowFavorites}>
         {loading && (
           <div
             className={styles.progressBar}

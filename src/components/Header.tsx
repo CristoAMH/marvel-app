@@ -8,34 +8,23 @@ interface HeaderProps {
   favoritesCount: number;
   onShowFavorites: () => void;
   onResetHome?: () => void;
-  logoAction?: ReactNode;
   children?: ReactNode;
 }
 
-export function Header({
-  favoritesCount,
-  onShowFavorites,
-  onResetHome,
-  logoAction,
-  children,
-}: HeaderProps) {
+export function Header({ favoritesCount, onShowFavorites, onResetHome, children }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        {logoAction ? (
-          logoAction
-        ) : (
-          <Link href="/" className={styles.logoLink} onClick={onResetHome}>
-            <Image
-              src="/marvel-logo.png"
-              alt="Marvel Logo"
-              width={130}
-              height={52}
-              className={styles.logo}
-              priority
-            />
-          </Link>
-        )}
+        <Link href="/" className={styles.logoLink} onClick={onResetHome}>
+          <Image
+            src="/marvel-logo.png"
+            alt="Marvel Logo"
+            width={130}
+            height={52}
+            className={styles.logo}
+            priority
+          />
+        </Link>
 
         <button
           aria-label="Show favorites"
