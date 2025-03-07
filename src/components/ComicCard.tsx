@@ -7,9 +7,8 @@ interface ComicCardProps {
 }
 
 export function ComicCard({ comic }: ComicCardProps) {
-  const year = comic.dates.find(d => d.type === 'onsaleDate')
-    ? new Date(comic.dates.find(d => d.type === 'onsaleDate')!.date).getFullYear()
-    : 'N/A';
+  const year =
+    new Date(comic.dates.find(d => d.type === 'onsaleDate')!.date).getFullYear() || 'N/A';
 
   return (
     <div className={styles.comicCard} role="listitem">

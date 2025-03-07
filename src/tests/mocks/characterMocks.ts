@@ -1,0 +1,28 @@
+export const mockCharacters = [
+  {
+    id: 1,
+    name: 'Spider-Man',
+    description: 'A friendly neighborhood Spider-Man',
+    modified: '2021-01-01T00:00:00-0400',
+    thumbnail: { path: 'http://example.com/spiderman', extension: 'jpg' },
+    resourceURI: 'http://example.com/spiderman',
+    comics: { available: 10, collectionURI: '', items: [], returned: 0 },
+    series: { available: 10, collectionURI: '', items: [], returned: 0 },
+    stories: { available: 10, collectionURI: '', items: [], returned: 0 },
+    events: { available: 10, collectionURI: '', items: [], returned: 0 },
+    urls: [],
+  },
+  {
+    id: 2,
+    name: 'Iron Man',
+    description: 'Genius, billionaire, playboy, philanthropist',
+    modified: '2021-02-02T00:00:00-0400',
+    thumbnail: { path: 'http://example.com/ironman', extension: 'jpg' },
+    resourceURI: 'http://example.com/ironman',
+    comics: { available: 15, collectionURI: '', items: [], returned: 0 },
+    series: { available: 8, collectionURI: '', items: [], returned: 0 },
+    stories: { available: 8, collectionURI: '', items: [], returned: 0 },
+    events: { available: 5, collectionURI: '', items: [], returned: 0 },
+    urls: [],
+  },
+];

@@ -1,8 +1,7 @@
 'use client';
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Character } from '@/services/api';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface FavoritesContextProps {
   favorites: Character[];
@@ -13,17 +12,50 @@ interface FavoritesContextProps {
 const FavoritesContext = createContext<FavoritesContextProps | undefined>(undefined);
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
-  // Usar nuestro custom hook para manejar el state y la sincronización con localStorage
-  const [favorites, setFavorites] = useLocalStorage<Character[]>('favorites', []);
+  const [favorites, setFavorites] = useState<Character[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Cargar favoritos del localStorage solo después del montaje en el cliente
+  useEffect(() => {
+    setIsClient(true);
+    const storedFavorites = localStorage.getItem('favorites');
+    if (storedFavorites) {
+      try {
+        setFavorites(JSON.parse(storedFavorites));
+      } catch (error) {
+        console.error('Error parsing favorites from localStorage:', error);
+        localStorage.removeItem('favorites');
+      }
+    }
+
+    // Agregar escucha para sincronizar entre pestañas
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'favorites' && event.newValue) {
+        try {
+          setFavorites(JSON.parse(event.newValue));
+        } catch (error) {
+          console.error('Error parsing localStorage change:', error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   function toggleFavorite(character: Character) {
     setFavorites(prev => {
       const exists = prev.some(f => f.id === character.id);
-      if (exists) {
-        return prev.filter(f => f.id !== character.id);
-      } else {
-        return [...prev, character];
+      const newFavorites = exists ? prev.filter(f => f.id !== character.id) : [...prev, character];
+
+      // Solo guardar en localStorage si estamos en el cliente
+      if (isClient) {
+        localStorage.setItem('favorites', JSON.stringify(newFavorites));
       }
+
+      return newFavorites;
     });
   }
 
